@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNR Tracker</title>
+</head>
+<body>
+    <h2>PNR Tracking List</h2>
+    <table border="1">
+        <tr>
+            <th>PNR Number</th>
+            <th>Mobile</th>
+            <th>Last Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for pnr in pnrs %}
+        <tr>
+            <td>{{ pnr.pnr }}</td>
+            <td>{{ pnr.mobile }}</td>
+            <td>{{ pnr.last_status }}</td>
+            <td>
+                <a href="{{ url_for('status', pnr=pnr.pnr) }}">Check Status</a> |
+                <a href="{{ url_for('delete_pnr', pnr=pnr.pnr) }}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Add PNR for Tracking</h2>
+    <form action="/add" method="POST">
+        <label>PNR Number:</label>
+        <input type="text" name="pnr_number" required>
+        <label>Mobile:</label>
+        <input type="text" name="mobile" required>
+        <button type="submit">Track PNR</button>
+    </form>
+</body>
+</html>
