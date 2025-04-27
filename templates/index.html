@@ -2,38 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PNR Tracker</title>
+    <title>Video Downloader</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
+        input, button { padding: 10px; margin: 5px; width: 300px; }
+    </style>
 </head>
 <body>
-    <h2>PNR Tracking List</h2>
-    <table border="1">
-        <tr>
-            <th>PNR Number</th>
-            <th>Mobile</th>
-            <th>Last Status</th>
-            <th>Actions</th>
-        </tr>
-        {% for pnr in pnrs %}
-        <tr>
-            <td>{{ pnr.pnr }}</td>
-            <td>{{ pnr.mobile }}</td>
-            <td>{{ pnr.last_status }}</td>
-            <td>
-                <a href="{{ url_for('status', pnr=pnr.pnr) }}">Check Status</a> |
-                <a href="{{ url_for('delete_pnr', pnr=pnr.pnr) }}">Remove</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 
-    <h2>Add PNR for Tracking</h2>
-    <form action="/add" method="POST">
-        <label>PNR Number:</label>
-        <input type="text" name="pnr_number" required>
-        <label>Mobile:</label>
-        <input type="text" name="mobile" required>
-        <button type="submit">Track PNR</button>
-    </form>
+    <h1>Video Downloader</h1>
+    <input type="text" id="videoURL" placeholder="Paste video URL here" />
+    <br>
+    <button onclick="downloadVideo()">Download</button>
+    <p id="result"></p>
+
+    <script>
+        async function downloadVideo() {
+            const url = document.getElementById('videoURL').value;
+            const result = document.getElementById('result');
+            result.innerHTML = 'Downloading... Please wait.';
+
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+                if (data.download_link) {
+                    result.innerHTML = `<a href="${data.download_link}">Click here to download your video</a>`;
+                } else {
+                    result.innerHTML = `Error: ${data.error}`;
+                }
+            } catch (error) {
+                result.innerHTML = `Error: ${error}`;
+            }
+        }
+    </script>
+
 </body>
 </html>
